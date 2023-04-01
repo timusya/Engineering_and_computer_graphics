@@ -1,9 +1,39 @@
-#include <GL/freeglut.h> // библиотека дл€ управлени€ оконной системой и т.д.
+#include <stdio.h>
+#include <GL/glew.h>
+#include <GL/freeglut.h>
+#include "math_3d.h"
 
-static void RenderSceneCB() // функци€ рендера
+GLuint VBO; // глобальна€ переменна€ дл€ хранени€ указател€ на буфер вершин
+
+// функци€ рендера
+static void RenderSceneCB()
 {
     glClear(GL_COLOR_BUFFER_BIT); // очистка буфера кадра
+
+    glEnableVertexAttribArray(0); // разрешение использовани€ каждого атрибута вершины
+    glBindBuffer(GL_ARRAY_BUFFER, VBO); // прив€зываем наш буфер, приготавлива€ его дл€ отрисовки
+    // этот вызов говорит конвейеру как воспринимать данные внутри буфера
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); // индекс атрибута, кол-во компонентов в атрибуте,
+    // тип данных, нужно ли нормализовать, число байт между 2 экземпл€рами
+
+    // отрисовка
+    glDrawArrays(GL_POINTS, 0, 1); // тип-точка, индекс, кол-во элементов
+
+    glDisableVertexAttribArray(0); // отключение атрибута вершины
+
     glutSwapBuffers(); // обмен фонового буфера и буфера кадра местами
+}
+
+static void CreateVertexBuffer()
+{
+    // создаем массив из одного экземпл€ра структуры Vector3f
+    Vector3f Vertices[1];
+    Vertices[0] = Vector3f(0.0f, 0.0f, 0.0f);
+
+    // создание буфера
+    glGenBuffers(1, &VBO); // создание буфера
+    glBindBuffer(GL_ARRAY_BUFFER, VBO); // св€зывание буфера с целью
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW); // наполнение буфера данными
 }
 
 int main(int argc, char** argv)
@@ -15,11 +45,20 @@ int main(int argc, char** argv)
     // настройка и создание окна
     glutInitWindowSize(550, 550); // размер окна
     glutInitWindowPosition(100, 100); // позици€ окна
-    glutCreateWindow("Lesson 01"); // создание окна
+    glutCreateWindow("Lesson 02"); // создание окна
 
     glutDisplayFunc(RenderSceneCB); // задаЄт обратный вызов отображени€ дл€ текущего окна
 
-    glClearColor(0.1f, 0.2f, 0.7f, 0.9f); // устанавливает цвет, который будет использован во врем€ очистки буфера кадра
+    // инициализируем GLEW и провер€ем на ошибки
+    GLenum res = glewInit();
+    if (res != GLEW_OK) {
+        fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+        return 1;
+    }
+
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // устанавливает цвет, который будет использован во врем€ очистки буфера кадра
+
+    CreateVertexBuffer(); // создание буффера вершин
 
     glutMainLoop(); // передаЄт контроль GLUT'у
 
