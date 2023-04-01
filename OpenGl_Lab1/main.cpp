@@ -17,7 +17,7 @@ static void RenderSceneCB()
     // тип данных, нужно ли нормализовать, число байт между 2 экземпл€рами
 
     // отрисовка
-    glDrawArrays(GL_POINTS, 0, 1); // тип-точка, индекс, кол-во элементов
+    glDrawArrays(GL_TRIANGLES, 0, 3); // тип, индекс, кол-во элементов
 
     glDisableVertexAttribArray(0); // отключение атрибута вершины
 
@@ -26,9 +26,11 @@ static void RenderSceneCB()
 
 static void CreateVertexBuffer()
 {
-    // создаем массив из одного экземпл€ра структуры Vector3f
-    Vector3f Vertices[1];
-    Vertices[0] = Vector3f(0.0f, 0.0f, 0.0f);
+    // создаем массив из трЄх экземпл€ров структуры Vector3f
+    Vector3f Vertices[3];
+    Vertices[0] = Vector3f(-1.0f, -1.0f, 0.0f); //l 
+    Vertices[1] = Vector3f(1.0f, -1.0f, 0.0f); //r
+    Vertices[2] = Vector3f(0.0f, 1.0f, 0.0f); //u
 
     // создание буфера
     glGenBuffers(1, &VBO); // создание буфера
@@ -45,7 +47,7 @@ int main(int argc, char** argv)
     // настройка и создание окна
     glutInitWindowSize(550, 550); // размер окна
     glutInitWindowPosition(100, 100); // позици€ окна
-    glutCreateWindow("Lesson 02"); // создание окна
+    glutCreateWindow("Lesson 03"); // создание окна
 
     glutDisplayFunc(RenderSceneCB); // задаЄт обратный вызов отображени€ дл€ текущего окна
 
