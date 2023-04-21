@@ -9,7 +9,7 @@
 GLuint VBO; 
 GLuint gWorldLocation; 
 
-// вершинный шейдер
+// РІРµСЂС€РёРЅРЅС‹Р№ С€РµР№РґРµСЂ
 static const char* pVS = "                                                          \n\
 #version 330                                                                        \n\
                                                                                     \n\
@@ -22,7 +22,7 @@ void main()                                                                     
     gl_Position = gWorld * vec4(Position, 1.0);                                     \n\
 }";
 
-// пиксельный шейдер
+// РїРёРєСЃРµР»СЊРЅС‹Р№ С€РµР№РґРµСЂ
 static const char* pFS = "                                                          \n\
 #version 330                                                                        \n\
                                                                                     \n\
@@ -33,22 +33,22 @@ void main()                                                                     
     FragColor = vec4(1.0, 0.0, 0.0, 1.0);                                           \n\
 }";
 
-// функция рендера
+// С„СѓРЅРєС†РёСЏ СЂРµРЅРґРµСЂР°
 static void RenderSceneCB()
 {
     glClear(GL_COLOR_BUFFER_BIT); 
 
     static float Scale = 0.0f;
-    static float Delta = 0.010f;
 
-    Scale += Delta;
+    Scale += 0.011f;
 
     Matrix4f World;
 
-    World.m[0][0] = cosf(Scale); World.m[0][1] = -sinf(Scale); World.m[0][2] = 0.0f; World.m[0][3] = 0.0f;
-    World.m[1][0] = sinf(Scale); World.m[1][1] = cosf(Scale);  World.m[1][2] = 0.0f; World.m[1][3] = 0.0f;
-    World.m[2][0] = 0.0f;        World.m[2][1] = 0.0f;         World.m[2][2] = 1.0f; World.m[2][3] = 0.0f;
-    World.m[3][0] = 0.0f;        World.m[3][1] = 0.0f;         World.m[3][2] = 0.0f; World.m[3][3] = 1.0f;
+    World.m[0][0] = sinf(Scale); World.m[0][1] = 0.0f;        World.m[0][2] = 0.0f;        World.m[0][3] = 0.0f;
+    World.m[1][0] = 0.0f;        World.m[1][1] = cosf(Scale); World.m[1][2] = 0.0f;        World.m[1][3] = 0.0f;
+    World.m[2][0] = 0.0f;        World.m[2][1] = 0.0f;        World.m[2][2] = sinf(Scale); World.m[2][3] = 0.0f;
+    World.m[3][0] = 0.0f;        World.m[3][1] = 0.0f;        World.m[3][2] = 0.0f;        World.m[3][3] = 1.0f;
+
 
     glUniformMatrix4fv(gWorldLocation, 1, GL_TRUE, &World.m[0][0]);
 
@@ -63,14 +63,14 @@ static void RenderSceneCB()
     glutSwapBuffers();
 }
 
-// функция отображения
+// С„СѓРЅРєС†РёСЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ
 static void InitializeGlutCallbacks()
 {
     glutDisplayFunc(RenderSceneCB);
     glutIdleFunc(RenderSceneCB);
 }
 
-// функция создания буффера вершин
+// С„СѓРЅРєС†РёСЏ СЃРѕР·РґР°РЅРёСЏ Р±СѓС„С„РµСЂР° РІРµСЂС€РёРЅ
 static void CreateVertexBuffer()
 {
     Vector3f Vertices[3];
@@ -83,7 +83,7 @@ static void CreateVertexBuffer()
     glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_STATIC_DRAW);
 }
 
-// функция добавления шейдера
+// С„СѓРЅРєС†РёСЏ РґРѕР±Р°РІР»РµРЅРёСЏ С€РµР№РґРµСЂР°
 static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
 {
     GLuint ShaderObj = glCreateShader(ShaderType);
@@ -111,7 +111,7 @@ static void AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum Shad
     glAttachShader(ShaderProgram, ShaderObj);
 }
 
-// функция компиляции шейдеров
+// С„СѓРЅРєС†РёСЏ РєРѕРјРїРёР»СЏС†РёРё С€РµР№РґРµСЂРѕРІ
 static void CompileShaders()
 {
     GLuint ShaderProgram = glCreateProgram();
@@ -151,16 +151,16 @@ static void CompileShaders()
 
 int main(int argc, char** argv)
 {
-    // инициализация и настройка GLUT
+    // РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ Рё РЅР°СЃС‚СЂРѕР№РєР° GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(1024, 768);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Tutorial 07");
+    glutCreateWindow("Tutorial 08");
 
     InitializeGlutCallbacks();
 
-    // инициализируем GLEW и проверяем на ошибки
+    // РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј GLEW Рё РїСЂРѕРІРµСЂСЏРµРј РЅР° РѕС€РёР±РєРё
     GLenum res = glewInit();
     if (res != GLEW_OK) {
         fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
